@@ -19,6 +19,13 @@ async function initData() {
         role: 'admin'
     });
 
+    const student2 = await User.create({
+        registration_number: 3,
+        name: 'Raghu',
+        password: 'Student@123456',
+        role: 'student'
+    });
+
     const s1 = await Subject.create({
         code: 'SBAA1603',
         name: 'Entrepreneurship'
@@ -62,7 +69,6 @@ async function initData() {
         }
     });
 
-    console.log(await student.getSubjects())
 }
 
 initData();
