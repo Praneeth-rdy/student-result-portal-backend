@@ -35,6 +35,7 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
+app.use('/api', require('./routes/main'));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/private', require('./routes/private'));
 

@@ -1,7 +1,22 @@
 const crypto = require('crypto');
-const User = require('../models/User');
+const { User } = require('../models');
 const ErrorResponse = require('../utils/errorResponse');
 
+
+exports.register = async (request, response, next) => {
+    const { registration_number, password } = request.body;
+
+    await User.create({
+        registration_number,
+        password,
+        role: 'student'
+    });
+
+    response.status(statusCode).json({
+        success: true,
+        message: 'User created successfully'
+    });
+};
 
 exports.login = async (request, response, next) => {
     const { registration_number, password } = request.body;

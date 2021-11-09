@@ -7,12 +7,14 @@ async function initData() {
 
     const student = await User.create({
         registration_number: 1,
+        name: 'Rajesh',
         password: 'Student@123456',
         role: 'student'
     });
 
     const admin = await User.create({
         registration_number: 2,
+        name: 'Shekar',
         password: 'Admin@123456',
         role: 'admin'
     });
@@ -31,8 +33,6 @@ async function initData() {
         code: 'SCSA1402',
         name: 'Computer'
     });
-
-    console.log(await student.getSubjects());
 
 
     await student.addSubject(s1, {

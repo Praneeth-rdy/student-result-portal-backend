@@ -1,16 +1,16 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const { User } = require('../models');
 const ErrorResponse = require('../utils/errorResponse');
 
 exports.protect = async (request, response, next) => {
     let token;
 
-    if(request.headers.authorization && request.headers.authorization.startsWith("Bearer")) {
+    if (request.headers.authorization && request.headers.authorization.startsWith("Bearer")) {
         // Bearer <token>
         token = request.headers.authorization.split(' ')[1];
     }
 
-    if(!token) {
+    if (!token) {
         return next(new ErrorResponse("Not authorized to access this route", 401));
     }
 
@@ -19,7 +19,7 @@ exports.protect = async (request, response, next) => {
 
         const user = await User.findByPk(decoded.id);
 
-        if(!user) {
+        if (!user) {
             return next(new ErrorResponse("No user found with this id", 404))
         }
 
@@ -27,5 +27,21 @@ exports.protect = async (request, response, next) => {
         next();
     } catch (error) {
         return next(new ErrorResponse("Not Authorized to access this route", 401));
+    }
+}
+
+exports.adminCheck = (request, response, next) => {
+    if (request.user.role === 'admin') {
+        next();
+    } else {
+        return next(new ErrorResponse("Not Authorized to access this route", 401));
+    }
+}
+
+exports.studentCheck = (request, response, next) => {
+    if (request.user.role === 'student') {
+        next();
+    } else {
+        return next(new ErrorResponse("Resource not found", 404));
     }
 }

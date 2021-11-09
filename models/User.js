@@ -12,6 +12,13 @@ module.exports = (sequelize, DataTypes) => {
             },
             unique: true,
         },
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            },
+        },
         password: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -39,20 +46,20 @@ module.exports = (sequelize, DataTypes) => {
         return await bcrypt.compare(password, this.password);
     }
 
+    User.prototype.getSignedToken = function () {
+        return jwt.sign(
+            { id: this.id },
+            process.env.JWT_SECRET,
+            // { expiresIn: process.env.JWT_EXPIRE }
+        );
+    }
+
     User.afterValidate(async (user, options) => {
         if (user.changed('password')) {
             const salt = await bcrypt.genSalt(10);
             user.password = await await bcrypt.hash(user.password, salt);
         }
     });
-
-    User.getSignedToken = function () {
-        return jwt.sign(
-            { id: this._id },
-            process.env.JWT_SECRET,
-            // { expiresIn: process.env.JWT_EXPIRE }
-        );
-    }
 
     User.associate = models => {
         User.belongsToMany(models.Subject, {
