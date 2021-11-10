@@ -27,12 +27,18 @@ exports.getResults = async (request, response, next) => {
 
 exports.getAllStudents = async (request, response, next) => {
     const users = await User.findAll({
-        attributes: ['id', 'name'],
+        attributes: ['registration_number', 'name'],
         where: {
             role: {
                 [Sequelize.Op.not]: 'admin'
             }
-        }
+        },
+        include: [
+            {
+                model: Subject,
+                attributes: ['id']
+            }
+        ]
     });
 
     response.status(200).json({
@@ -160,6 +166,44 @@ exports.getMyResult = async (request, response, next) => {
             }
         ],
     });
+
+    response.status(200).json({
+        success: true,
+        userData: JSON.stringify(userData),
+    });
+}
+
+exports.getUserData = async (request, response, next) => {
+    const { query: { registration_number } } = request;
+    let userData = await User.findOne({
+        where: { registration_number },
+        include: [
+            {
+                model: Subject,
+                attributes: ['code',]
+            }
+        ],
+    });
+
+
+    userData = JSON.parse(JSON.stringify(userData));
+
+    let result = []
+
+    for(let subject of userData.Subjects){
+        result.push({
+            code: subject.code,
+            ...subject.user_subject
+        });
+    }
+
+    userData = {
+        registration_number: userData.registration_number,
+        name: userData.name,
+        result
+    }
+
+    
 
     response.status(200).json({
         success: true,

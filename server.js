@@ -23,7 +23,7 @@ app.set('view engine', 'ejs');
 
 
 const corsOptions = {
-    "origin": ['http://localhost:3000'],
+    "origin": ['http://localhost:4200', '*'],
     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
     "preflightContinue": false,
     "optionsSuccessStatus": 204,
